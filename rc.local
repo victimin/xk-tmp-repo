@@ -19,4 +19,5 @@ fi
 
 sudo xksdk -f &
 sudo iw dev wlan0 set power_save off
+sudo touch /forcefsck
 exit 0
