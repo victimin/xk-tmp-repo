@@ -11,6 +11,7 @@ extern "C"
 #define MYTHINGS_MSG_SZ             200
 #define MYTHINGS_MSG_SEND_LIMIT_SZ          110
 
+#define MYTHINGS_SEND_PERIOD                20  //sec
 
 #define PARAM_IDX_ZONE_PRE_STS              4
 #define PARAM_IDX_ZONE_NUM_PEOPLE           15

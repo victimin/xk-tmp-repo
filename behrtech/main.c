@@ -517,7 +517,8 @@ void *SendMythings(void *data)
     int i, temp;
     int nControlMsg = 0;
     unsigned long waitGETTime=0;
-    struct timespec sTimeOutNanoTimeVal;
+    struct timespec sTimeOutNanoTimeSendPeriod;
+    struct timespec sTimeOutNanoTimeSendPeriod_pre;
 
     long long timeCheckSend = 0;
     long long timeCheckSend_pre = 0;
@@ -571,223 +572,235 @@ void *SendMythings(void *data)
     delay(3000);
     XK_ATcmdInit(&fAtcmd);
 
-    rtn = clock_gettime(CLOCK_REALTIME, &sTimeOutNanoTimeVal);
-    XKtimeCheckSend = XK_GetTime(sTimeOutNanoTimeVal);
-    // printf("XKtimeCheckSend = %d\n", XKtimeCheckSend);
+    
+    // rtn = clock_gettime(CLOCK_REALTIME, &sTimeOutNanoTimeSendPeriod_pre);
+    XKtimeCheckSend_pre = 0;
 
     while(1)
     {
-        for (i = 0; i < MAX_NUM_USB_DEVICE; i++)
+        rtn = clock_gettime(CLOCK_REALTIME, &sTimeOutNanoTimeSendPeriod);
+        XKtimeCheckSend = XK_GetTime(sTimeOutNanoTimeSendPeriod);
+
+        timeDiff = (10000 + XKtimeCheckSend - XKtimeCheckSend_pre) % 10000;
+        // printf("%d \n", timeDiff);
+
+        if( timeDiff  > MYTHINGS_SEND_PERIOD*10 )
         {
-            if(usbStatus[i]==0){
-                memcpy(rcvdData[i], g_Radar_Data[(GETDATA_BUFFER_NUMBER + nShearBufferIdx[i] - 1)%GETDATA_BUFFER_NUMBER].m_nALLRadarData[i], NUM_RCV_PARA*4);
-            }
-        }
-        memset(tmpAtPacket, 0, MYTHINGS_MSG_SZ);
-        memset(tmpAtPacket_asc, 0, MYTHINGS_MSG_SZ*2);
-
-        for (i = 0; i < MAX_NUM_USB_DEVICE; i++){
-            if(usbStatus[i]==0){
-                if(strlen(tmpAtPacket)>0) tmpAtPacket[strlen(tmpAtPacket)] = SEND_SEPARATOR_COMMON;
-                switch(XK_UARTHandle[i].appNum){
-                    case  21:       //INOUT single
-                        if(sendCnt[i] == SEND_PERIOD_INOUT_VERSION){
-                            stateCMD[i] = SENDING_STATE_INOUT_VER;
-                            if(res) sendCnt[i] = 0;
-                        }
-                        else{
-                            stateCMD[i] = SENDING_STATE_INOUT_NORMAL;
-                            sendCnt[i]++;
-                        }
-                        
-                        if(stateCMD[i] == SENDING_STATE_INOUT_VER){                            
-                            ///////////////// inout version /////////////////
-                            tmpAtPacket[strlen(tmpAtPacket)] = SEND_CMD_INOUT_VERSION;
-
-                            sprintf(&tmpAtPacket[strlen(tmpAtPacket)], "%d", XK_UARTHandle[i].appNum);
-                            sprintf(&tmpAtPacket[strlen(tmpAtPacket)], "%s", XK_HTTPHandle->serialNum[i]);
-
-                            tmpAtPacket[strlen(tmpAtPacket)] = (((unsigned int)rcvdData[i][PARAM_IDX_INOUT_VER+4])/100000)%10+'0';
-                            tmpAtPacket[strlen(tmpAtPacket)] = (((unsigned int)rcvdData[i][PARAM_IDX_INOUT_VER+4])/10000)%10+'0';
-                            tmpAtPacket[strlen(tmpAtPacket)] = (((unsigned int)rcvdData[i][PARAM_IDX_INOUT_VER+4])/1000)%10+'0';
-                            tmpAtPacket[strlen(tmpAtPacket)] = (((unsigned int)rcvdData[i][PARAM_IDX_INOUT_VER+4])/100)%10+'0';
-                            tmpAtPacket[strlen(tmpAtPacket)] = (((unsigned int)rcvdData[i][PARAM_IDX_INOUT_VER+4])/10)%10+'0';
-                            tmpAtPacket[strlen(tmpAtPacket)] = (((unsigned int)rcvdData[i][PARAM_IDX_INOUT_VER+4])%10)+'0';
-                        }
-                        else {
-                            ///////////////// inout normal /////////////////
-                            tmpAtPacket[strlen(tmpAtPacket)] = SEND_CMD_INOUT_NORMAL;
-                            
-                            sprintf(&tmpAtPacket[strlen(tmpAtPacket)], "%d", XK_UARTHandle[i].appNum);
-                            sprintf(&tmpAtPacket[strlen(tmpAtPacket)], "%s", XK_HTTPHandle->serialNum[i]);
-
-                            tmpAtPacket[strlen(tmpAtPacket)] = (((unsigned int)rcvdData[i][PARAM_IDX_INOUT_CONN_STS+4])%10)+'0';
-                            
-                            tmpAtPacket[strlen(tmpAtPacket)] = (((unsigned int)rcvdData[i][PARAM_IDX_INOUT_IN_CNT+4])/100)%10+'0';
-                            tmpAtPacket[strlen(tmpAtPacket)] = (((unsigned int)rcvdData[i][PARAM_IDX_INOUT_IN_CNT+4])/10)%10+'0';
-                            tmpAtPacket[strlen(tmpAtPacket)] = (((unsigned int)rcvdData[i][PARAM_IDX_INOUT_IN_CNT+4])%10)+'0';
-
-                            tmpAtPacket[strlen(tmpAtPacket)] = (((unsigned int)rcvdData[i][PARAM_IDX_INOUT_OUT_CNT+4])/100)%10+'0';
-                            tmpAtPacket[strlen(tmpAtPacket)] = (((unsigned int)rcvdData[i][PARAM_IDX_INOUT_OUT_CNT+4])/10)%10+'0';
-                            tmpAtPacket[strlen(tmpAtPacket)] = (((unsigned int)rcvdData[i][PARAM_IDX_INOUT_OUT_CNT+4])%10)+'0';
-
-                            tmpAtPacket[strlen(tmpAtPacket)] = (((unsigned int)rcvdData[i][PARAM_IDX_INOUT_UPDT_CNT+4])%10)+'0';
-
-                        }
-                    break;
-
-                    case  30:       //Zone
-                        if(sendCnt[i] == SEND_PERIOD_ZONE_VERSION){
-                            stateCMD[i] = SENDING_STATE_ZONE_VER;
-                            if(res) sendCnt[i] = 0;
-                        }
-                        else if(sendCnt[i] % SEND_PERIOD_ZONE_MAP_VAL == 0){
-                            stateCMD[i] = SENDING_STATE_ZONE_MAP_VAL;
-                            if(res) sendCnt[i]++;
-                        }
-                        else{
-                            stateCMD[i] = SENDING_STATE_ZONE_NORMAL;
-                            sendCnt[i]++;
-                        }
-
-                        if(stateCMD[i] == SENDING_STATE_ZONE_VER){
-                            ///////////////// zone version /////////////////
-                            tmpAtPacket[strlen(tmpAtPacket)] = SEND_CMD_ZONE_VERSION;
-                            
-                            sprintf(&tmpAtPacket[strlen(tmpAtPacket)], "%d", XK_UARTHandle[i].appNum);
-                            sprintf(&tmpAtPacket[strlen(tmpAtPacket)], "%s", XK_HTTPHandle->serialNum[i]);
-                            
-                            tmpAtPacket[strlen(tmpAtPacket)] = (((unsigned int)rcvdData[i][PARAM_IDX_ZONE_VER+4])/100000)%10+'0';
-                            tmpAtPacket[strlen(tmpAtPacket)] = (((unsigned int)rcvdData[i][PARAM_IDX_ZONE_VER+4])/10000)%10+'0';
-                            tmpAtPacket[strlen(tmpAtPacket)] = (((unsigned int)rcvdData[i][PARAM_IDX_ZONE_VER+4])/1000)%10+'0';
-                            tmpAtPacket[strlen(tmpAtPacket)] = (((unsigned int)rcvdData[i][PARAM_IDX_ZONE_VER+4])/100)%10+'0';
-                            tmpAtPacket[strlen(tmpAtPacket)] = (((unsigned int)rcvdData[i][PARAM_IDX_ZONE_VER+4])/10)%10+'0';
-                            tmpAtPacket[strlen(tmpAtPacket)] = (((unsigned int)rcvdData[i][PARAM_IDX_ZONE_VER+4])%10)+'0';
-                        }
-                        else if(stateCMD[i] == SENDING_STATE_ZONE_MAP_VAL){
-                            ///////////////// zone mapping val /////////////////
-                            tmpAtPacket[strlen(tmpAtPacket)] = SEND_CMD_ZONE_MAP_VAL;
-                            
-                            sprintf(&tmpAtPacket[strlen(tmpAtPacket)], "%d", XK_UARTHandle[i].appNum);
-                            sprintf(&tmpAtPacket[strlen(tmpAtPacket)], "%s", XK_HTTPHandle->serialNum[i]);
-
-                            tmpAtPacket[strlen(tmpAtPacket)] = (((unsigned int)rcvdData[i][PARAM_IDX_ZONE_RDR_MAP_IDX+4])/100)%10+'0';
-                            tmpAtPacket[strlen(tmpAtPacket)] = (((unsigned int)rcvdData[i][PARAM_IDX_ZONE_RDR_MAP_IDX+4])/10)%10+'0';
-                            tmpAtPacket[strlen(tmpAtPacket)] = (((unsigned int)rcvdData[i][PARAM_IDX_ZONE_RDR_MAP_IDX+4])%10)+'0';
-                            tmpAtPacket[strlen(tmpAtPacket)] = (unsigned int)((rcvdData[i][PARAM_IDX_ZONE_RDR_MAP_IDX+4])*10)%10+'0';
-
-                            tmpAtPacket[strlen(tmpAtPacket)] = (((unsigned int)rcvdData[i][PARAM_IDX_ZONE_ENV_MAP_IDX+4])/100)%10+'0';
-                            tmpAtPacket[strlen(tmpAtPacket)] = (((unsigned int)rcvdData[i][PARAM_IDX_ZONE_ENV_MAP_IDX+4])/10)%10+'0';
-                            tmpAtPacket[strlen(tmpAtPacket)] = (((unsigned int)rcvdData[i][PARAM_IDX_ZONE_ENV_MAP_IDX+4])%10)+'0';
-                            tmpAtPacket[strlen(tmpAtPacket)] = (unsigned int)((rcvdData[i][PARAM_IDX_ZONE_ENV_MAP_IDX+4])*10)%10+'0';
-                        }
-                        else{
-                            ///////////////// zone normal /////////////////
-                            tmpAtPacket[strlen(tmpAtPacket)] = SEND_CMD_ZONE_NORMAL;
-
-                            sprintf(&tmpAtPacket[strlen(tmpAtPacket)], "%d", XK_UARTHandle[i].appNum);
-                            sprintf(&tmpAtPacket[strlen(tmpAtPacket)], "%s", XK_HTTPHandle->serialNum[i]);
-
-                            tmpAtPacket[strlen(tmpAtPacket)] = (((unsigned int)rcvdData[i][PARAM_IDX_ZONE_PRE_STS+4])%10)+'0';
-
-                            tmpAtPacket[strlen(tmpAtPacket)] = (((unsigned int)rcvdData[i][PARAM_IDX_ZONE_NUM_PEOPLE+4])/10)%10+'0';
-                            tmpAtPacket[strlen(tmpAtPacket)] = (((unsigned int)rcvdData[i][PARAM_IDX_ZONE_NUM_PEOPLE+4])%10)+'0';
-                            tmpAtPacket[strlen(tmpAtPacket)] = (unsigned int)((rcvdData[i][PARAM_IDX_ZONE_NUM_PEOPLE+4])*10)%10+'0';
-
-                            tmpAtPacket[strlen(tmpAtPacket)] = (((unsigned int)rcvdData[i][PARAM_IDX_ZONE_LONG_T_IDX+4])/100)%10+'0';
-                            tmpAtPacket[strlen(tmpAtPacket)] = (((unsigned int)rcvdData[i][PARAM_IDX_ZONE_LONG_T_IDX+4])/10)%10+'0';
-                            tmpAtPacket[strlen(tmpAtPacket)] = (((unsigned int)rcvdData[i][PARAM_IDX_ZONE_LONG_T_IDX+4])%10)+'0';
-                            tmpAtPacket[strlen(tmpAtPacket)] = (unsigned int)((rcvdData[i][PARAM_IDX_ZONE_LONG_T_IDX+4])*10)%10+'0';
-                        }
-                    break;
-
-                    case  40:       //Presence
-                    
-                        if(sendCnt[i] == SEND_PERIOD_PRES_VERSION){
-                            stateCMD[i] = SENDING_STATE_PRES_VER;
-                            if(res) sendCnt[i] = 0;
-                        }
-                        else{
-                            stateCMD[i] = SENDING_STATE_PRES_NORMAL;
-                            sendCnt[i]++;
-                        }
-
-                        if(stateCMD[i] == SENDING_STATE_PRES_VER){
-                            ///////////////// presence normal /////////////////
-                            tmpAtPacket[strlen(tmpAtPacket)] = SEND_CMD_PRES_VERSION;
-                            
-                            sprintf(&tmpAtPacket[strlen(tmpAtPacket)], "%d", XK_UARTHandle[i].appNum);
-                            sprintf(&tmpAtPacket[strlen(tmpAtPacket)], "%s", XK_HTTPHandle->serialNum[i]);
-                            
-                            tmpAtPacket[strlen(tmpAtPacket)] = (((unsigned int)rcvdData[i][PARAM_IDX_PRES_VER+4])/100000)%10+'0';
-                            tmpAtPacket[strlen(tmpAtPacket)] = (((unsigned int)rcvdData[i][PARAM_IDX_PRES_VER+4])/10000)%10+'0';
-                            tmpAtPacket[strlen(tmpAtPacket)] = (((unsigned int)rcvdData[i][PARAM_IDX_PRES_VER+4])/1000)%10+'0';
-                            tmpAtPacket[strlen(tmpAtPacket)] = (((unsigned int)rcvdData[i][PARAM_IDX_PRES_VER+4])/100)%10+'0';
-                            tmpAtPacket[strlen(tmpAtPacket)] = (((unsigned int)rcvdData[i][PARAM_IDX_PRES_VER+4])/10)%10+'0';
-                            tmpAtPacket[strlen(tmpAtPacket)] = (((unsigned int)rcvdData[i][PARAM_IDX_PRES_VER+4])%10)+'0';
-                        }
-                        else{
-                            ///////////////// presence normal /////////////////
-                            tmpAtPacket[strlen(tmpAtPacket)] = SEND_CMD_PRES_NORMAL;
-                            
-                            sprintf(&tmpAtPacket[strlen(tmpAtPacket)], "%d", XK_UARTHandle[i].appNum);
-                            sprintf(&tmpAtPacket[strlen(tmpAtPacket)], "%s", XK_HTTPHandle->serialNum[i]);
-
-                            tmpAtPacket[strlen(tmpAtPacket)] = (((unsigned int)rcvdData[i][PARAM_IDX_PRES_PRES_STS+4])%10)+'0';
-                        }
-                    break;
-
-                    default :       //
-                        tmpAtPacket[strlen(tmpAtPacket)] = SEND_CMD_COMMON_ERROR;
-                        tmpAtPacket[strlen(tmpAtPacket)] = SEND_ERROR_INVALID_APPNUM + 48;
-                        LOG_E("SendMythings", "Invalid App number");
-                    break;
+            for (i = 0; i < MAX_NUM_USB_DEVICE; i++)
+            {
+                if(usbStatus[i]==0){
+                    memcpy(rcvdData[i], g_Radar_Data[(GETDATA_BUFFER_NUMBER + nShearBufferIdx[i] - 1)%GETDATA_BUFFER_NUMBER].m_nALLRadarData[i], NUM_RCV_PARA*4);
                 }
             }
-        }
+            memset(tmpAtPacket, 0, MYTHINGS_MSG_SZ);
+            memset(tmpAtPacket_asc, 0, MYTHINGS_MSG_SZ*2);
 
-        if(strlen(tmpAtPacket) >= MYTHINGS_MSG_SEND_LIMIT_SZ) {    
-            memset(tmpAtPacket, 0, MYTHINGS_MSG_SZ);        
-            tmpAtPacket[0] = SEND_CMD_COMMON_ERROR;
-            tmpAtPacket[1] = SEND_ERROR_OVERFLOW_DATA + 48;
-        }
-        else if(strlen(tmpAtPacket) == 0){
-            memset(tmpAtPacket, 0, MYTHINGS_MSG_SZ);        
-            tmpAtPacket[0] = SEND_CMD_COMMON_ERROR;
-            tmpAtPacket[1] = SEND_ERROR_EMPTY + 48;
-        }
-        
-        tmpAtPacket[strlen(tmpAtPacket)] = '\0';
-        for(i=0 ; i<strlen(tmpAtPacket) ; i++) sprintf(&tmpAtPacket_asc[i*2], "%02x", tmpAtPacket[i]);
+            for (i = 0; i < MAX_NUM_USB_DEVICE; i++){
+                if(usbStatus[i]==0){
+                    if(strlen(tmpAtPacket)>0) tmpAtPacket[strlen(tmpAtPacket)] = SEND_SEPARATOR_COMMON;
+                    switch(XK_UARTHandle[i].appNum){
+                        case  21:       //INOUT single
+                            if(sendCnt[i] == SEND_PERIOD_INOUT_VERSION){
+                                stateCMD[i] = SENDING_STATE_INOUT_VER;
+                                if(res) sendCnt[i] = 0;
+                            }
+                            else{
+                                stateCMD[i] = SENDING_STATE_INOUT_NORMAL;
+                                sendCnt[i]++;
+                            }
+                            
+                            if(stateCMD[i] == SENDING_STATE_INOUT_VER){                            
+                                ///////////////// inout version /////////////////
+                                tmpAtPacket[strlen(tmpAtPacket)] = SEND_CMD_INOUT_VERSION;
 
-// printf("%d:%s\n", sendCntMain, tmpAtPacket);
-// printf("%d:%s\n\n", sendCntMain, tmpAtPacket_asc);
+                                sprintf(&tmpAtPacket[strlen(tmpAtPacket)], "%d", XK_UARTHandle[i].appNum);
+                                sprintf(&tmpAtPacket[strlen(tmpAtPacket)], "%s", XK_HTTPHandle->serialNum[i]);
 
-        sprintf(destMsg, AT_CMD_UNI, strlen(tmpAtPacket_asc)/2, AT_TAB, tmpAtPacket_asc, AT_EOF);
-        // delay(1000);
+                                tmpAtPacket[strlen(tmpAtPacket)] = (((unsigned int)rcvdData[i][PARAM_IDX_INOUT_VER+4])/100000)%10+'0';
+                                tmpAtPacket[strlen(tmpAtPacket)] = (((unsigned int)rcvdData[i][PARAM_IDX_INOUT_VER+4])/10000)%10+'0';
+                                tmpAtPacket[strlen(tmpAtPacket)] = (((unsigned int)rcvdData[i][PARAM_IDX_INOUT_VER+4])/1000)%10+'0';
+                                tmpAtPacket[strlen(tmpAtPacket)] = (((unsigned int)rcvdData[i][PARAM_IDX_INOUT_VER+4])/100)%10+'0';
+                                tmpAtPacket[strlen(tmpAtPacket)] = (((unsigned int)rcvdData[i][PARAM_IDX_INOUT_VER+4])/10)%10+'0';
+                                tmpAtPacket[strlen(tmpAtPacket)] = (((unsigned int)rcvdData[i][PARAM_IDX_INOUT_VER+4])%10)+'0';
+                            }
+                            else {
+                                ///////////////// inout normal /////////////////
+                                tmpAtPacket[strlen(tmpAtPacket)] = SEND_CMD_INOUT_NORMAL;
+                                
+                                sprintf(&tmpAtPacket[strlen(tmpAtPacket)], "%d", XK_UARTHandle[i].appNum);
+                                sprintf(&tmpAtPacket[strlen(tmpAtPacket)], "%s", XK_HTTPHandle->serialNum[i]);
 
-        read(fAtcmd, tmpAtPacket, MYTHINGS_MSG_SZ);
-        XK_ATcmdWriteSimple(fAtcmd, destMsg);
-        delay(100);
-        res = XK_ATcmdRead(fAtcmd, 8);
+                                tmpAtPacket[strlen(tmpAtPacket)] = (((unsigned int)rcvdData[i][PARAM_IDX_INOUT_CONN_STS+4])%10)+'0';
+                                
+                                tmpAtPacket[strlen(tmpAtPacket)] = (((unsigned int)rcvdData[i][PARAM_IDX_INOUT_IN_CNT+4])/100)%10+'0';
+                                tmpAtPacket[strlen(tmpAtPacket)] = (((unsigned int)rcvdData[i][PARAM_IDX_INOUT_IN_CNT+4])/10)%10+'0';
+                                tmpAtPacket[strlen(tmpAtPacket)] = (((unsigned int)rcvdData[i][PARAM_IDX_INOUT_IN_CNT+4])%10)+'0';
 
-        if(res) sendCntMain++;
+                                tmpAtPacket[strlen(tmpAtPacket)] = (((unsigned int)rcvdData[i][PARAM_IDX_INOUT_OUT_CNT+4])/100)%10+'0';
+                                tmpAtPacket[strlen(tmpAtPacket)] = (((unsigned int)rcvdData[i][PARAM_IDX_INOUT_OUT_CNT+4])/10)%10+'0';
+                                tmpAtPacket[strlen(tmpAtPacket)] = (((unsigned int)rcvdData[i][PARAM_IDX_INOUT_OUT_CNT+4])%10)+'0';
 
-        if(res==0){
-            errCnt++;
-            // _errCnt++;
-        }
-        else errCnt = 0;
+                                tmpAtPacket[strlen(tmpAtPacket)] = (((unsigned int)rcvdData[i][PARAM_IDX_INOUT_UPDT_CNT+4])%10)+'0';
 
-        if(errCnt >= 100) system("sudo reboot");
-        else{
-            if(errCnt%5==0){
-                XK_ATcmdWriteSimple(fAtcmd, AT_CMD_RST);
-                delay(2000);
+                            }
+                        break;
+
+                        case  30:       //Zone
+                            if(sendCnt[i] == SEND_PERIOD_ZONE_VERSION){
+                                stateCMD[i] = SENDING_STATE_ZONE_VER;
+                                if(res) sendCnt[i] = 0;
+                            }
+                            else if(sendCnt[i] % SEND_PERIOD_ZONE_MAP_VAL == 0){
+                                stateCMD[i] = SENDING_STATE_ZONE_MAP_VAL;
+                                if(res) sendCnt[i]++;
+                            }
+                            else{
+                                stateCMD[i] = SENDING_STATE_ZONE_NORMAL;
+                                sendCnt[i]++;
+                            }
+
+                            if(stateCMD[i] == SENDING_STATE_ZONE_VER){
+                                ///////////////// zone version /////////////////
+                                tmpAtPacket[strlen(tmpAtPacket)] = SEND_CMD_ZONE_VERSION;
+                                
+                                sprintf(&tmpAtPacket[strlen(tmpAtPacket)], "%d", XK_UARTHandle[i].appNum);
+                                sprintf(&tmpAtPacket[strlen(tmpAtPacket)], "%s", XK_HTTPHandle->serialNum[i]);
+                                
+                                tmpAtPacket[strlen(tmpAtPacket)] = (((unsigned int)rcvdData[i][PARAM_IDX_ZONE_VER+4])/100000)%10+'0';
+                                tmpAtPacket[strlen(tmpAtPacket)] = (((unsigned int)rcvdData[i][PARAM_IDX_ZONE_VER+4])/10000)%10+'0';
+                                tmpAtPacket[strlen(tmpAtPacket)] = (((unsigned int)rcvdData[i][PARAM_IDX_ZONE_VER+4])/1000)%10+'0';
+                                tmpAtPacket[strlen(tmpAtPacket)] = (((unsigned int)rcvdData[i][PARAM_IDX_ZONE_VER+4])/100)%10+'0';
+                                tmpAtPacket[strlen(tmpAtPacket)] = (((unsigned int)rcvdData[i][PARAM_IDX_ZONE_VER+4])/10)%10+'0';
+                                tmpAtPacket[strlen(tmpAtPacket)] = (((unsigned int)rcvdData[i][PARAM_IDX_ZONE_VER+4])%10)+'0';
+                            }
+                            else if(stateCMD[i] == SENDING_STATE_ZONE_MAP_VAL){
+                                ///////////////// zone mapping val /////////////////
+                                tmpAtPacket[strlen(tmpAtPacket)] = SEND_CMD_ZONE_MAP_VAL;
+                                
+                                sprintf(&tmpAtPacket[strlen(tmpAtPacket)], "%d", XK_UARTHandle[i].appNum);
+                                sprintf(&tmpAtPacket[strlen(tmpAtPacket)], "%s", XK_HTTPHandle->serialNum[i]);
+
+                                tmpAtPacket[strlen(tmpAtPacket)] = (((unsigned int)rcvdData[i][PARAM_IDX_ZONE_RDR_MAP_IDX+4])/100)%10+'0';
+                                tmpAtPacket[strlen(tmpAtPacket)] = (((unsigned int)rcvdData[i][PARAM_IDX_ZONE_RDR_MAP_IDX+4])/10)%10+'0';
+                                tmpAtPacket[strlen(tmpAtPacket)] = (((unsigned int)rcvdData[i][PARAM_IDX_ZONE_RDR_MAP_IDX+4])%10)+'0';
+                                tmpAtPacket[strlen(tmpAtPacket)] = (unsigned int)((rcvdData[i][PARAM_IDX_ZONE_RDR_MAP_IDX+4])*10)%10+'0';
+
+                                tmpAtPacket[strlen(tmpAtPacket)] = (((unsigned int)rcvdData[i][PARAM_IDX_ZONE_ENV_MAP_IDX+4])/100)%10+'0';
+                                tmpAtPacket[strlen(tmpAtPacket)] = (((unsigned int)rcvdData[i][PARAM_IDX_ZONE_ENV_MAP_IDX+4])/10)%10+'0';
+                                tmpAtPacket[strlen(tmpAtPacket)] = (((unsigned int)rcvdData[i][PARAM_IDX_ZONE_ENV_MAP_IDX+4])%10)+'0';
+                                tmpAtPacket[strlen(tmpAtPacket)] = (unsigned int)((rcvdData[i][PARAM_IDX_ZONE_ENV_MAP_IDX+4])*10)%10+'0';
+                            }
+                            else{
+                                ///////////////// zone normal /////////////////
+                                tmpAtPacket[strlen(tmpAtPacket)] = SEND_CMD_ZONE_NORMAL;
+
+                                sprintf(&tmpAtPacket[strlen(tmpAtPacket)], "%d", XK_UARTHandle[i].appNum);
+                                sprintf(&tmpAtPacket[strlen(tmpAtPacket)], "%s", XK_HTTPHandle->serialNum[i]);
+
+                                tmpAtPacket[strlen(tmpAtPacket)] = (((unsigned int)rcvdData[i][PARAM_IDX_ZONE_PRE_STS+4])%10)+'0';
+
+                                tmpAtPacket[strlen(tmpAtPacket)] = (((unsigned int)rcvdData[i][PARAM_IDX_ZONE_NUM_PEOPLE+4])/10)%10+'0';
+                                tmpAtPacket[strlen(tmpAtPacket)] = (((unsigned int)rcvdData[i][PARAM_IDX_ZONE_NUM_PEOPLE+4])%10)+'0';
+                                tmpAtPacket[strlen(tmpAtPacket)] = (unsigned int)((rcvdData[i][PARAM_IDX_ZONE_NUM_PEOPLE+4])*10)%10+'0';
+
+                                tmpAtPacket[strlen(tmpAtPacket)] = (((unsigned int)rcvdData[i][PARAM_IDX_ZONE_LONG_T_IDX+4])/100)%10+'0';
+                                tmpAtPacket[strlen(tmpAtPacket)] = (((unsigned int)rcvdData[i][PARAM_IDX_ZONE_LONG_T_IDX+4])/10)%10+'0';
+                                tmpAtPacket[strlen(tmpAtPacket)] = (((unsigned int)rcvdData[i][PARAM_IDX_ZONE_LONG_T_IDX+4])%10)+'0';
+                                tmpAtPacket[strlen(tmpAtPacket)] = (unsigned int)((rcvdData[i][PARAM_IDX_ZONE_LONG_T_IDX+4])*10)%10+'0';
+                            }
+                        break;
+
+                        case  40:       //Presence
+                        
+                            if(sendCnt[i] == SEND_PERIOD_PRES_VERSION){
+                                stateCMD[i] = SENDING_STATE_PRES_VER;
+                                if(res) sendCnt[i] = 0;
+                            }
+                            else{
+                                stateCMD[i] = SENDING_STATE_PRES_NORMAL;
+                                sendCnt[i]++;
+                            }
+
+                            if(stateCMD[i] == SENDING_STATE_PRES_VER){
+                                ///////////////// presence normal /////////////////
+                                tmpAtPacket[strlen(tmpAtPacket)] = SEND_CMD_PRES_VERSION;
+                                
+                                sprintf(&tmpAtPacket[strlen(tmpAtPacket)], "%d", XK_UARTHandle[i].appNum);
+                                sprintf(&tmpAtPacket[strlen(tmpAtPacket)], "%s", XK_HTTPHandle->serialNum[i]);
+                                
+                                tmpAtPacket[strlen(tmpAtPacket)] = (((unsigned int)rcvdData[i][PARAM_IDX_PRES_VER+4])/100000)%10+'0';
+                                tmpAtPacket[strlen(tmpAtPacket)] = (((unsigned int)rcvdData[i][PARAM_IDX_PRES_VER+4])/10000)%10+'0';
+                                tmpAtPacket[strlen(tmpAtPacket)] = (((unsigned int)rcvdData[i][PARAM_IDX_PRES_VER+4])/1000)%10+'0';
+                                tmpAtPacket[strlen(tmpAtPacket)] = (((unsigned int)rcvdData[i][PARAM_IDX_PRES_VER+4])/100)%10+'0';
+                                tmpAtPacket[strlen(tmpAtPacket)] = (((unsigned int)rcvdData[i][PARAM_IDX_PRES_VER+4])/10)%10+'0';
+                                tmpAtPacket[strlen(tmpAtPacket)] = (((unsigned int)rcvdData[i][PARAM_IDX_PRES_VER+4])%10)+'0';
+                            }
+                            else{
+                                ///////////////// presence normal /////////////////
+                                tmpAtPacket[strlen(tmpAtPacket)] = SEND_CMD_PRES_NORMAL;
+                                
+                                sprintf(&tmpAtPacket[strlen(tmpAtPacket)], "%d", XK_UARTHandle[i].appNum);
+                                sprintf(&tmpAtPacket[strlen(tmpAtPacket)], "%s", XK_HTTPHandle->serialNum[i]);
+
+                                tmpAtPacket[strlen(tmpAtPacket)] = (((unsigned int)rcvdData[i][PARAM_IDX_PRES_PRES_STS+4])%10)+'0';
+                            }
+                        break;
+
+                        default :       //
+                            tmpAtPacket[strlen(tmpAtPacket)] = SEND_CMD_COMMON_ERROR;
+                            tmpAtPacket[strlen(tmpAtPacket)] = SEND_ERROR_INVALID_APPNUM + 48;
+                            LOG_E("SendMythings", "Invalid App number");
+                        break;
+                    }
+                }
             }
+
+            if(strlen(tmpAtPacket) >= MYTHINGS_MSG_SEND_LIMIT_SZ) {    
+                memset(tmpAtPacket, 0, MYTHINGS_MSG_SZ);        
+                tmpAtPacket[0] = SEND_CMD_COMMON_ERROR;
+                tmpAtPacket[1] = SEND_ERROR_OVERFLOW_DATA + 48;
+            }
+            else if(strlen(tmpAtPacket) == 0){
+                memset(tmpAtPacket, 0, MYTHINGS_MSG_SZ);        
+                tmpAtPacket[0] = SEND_CMD_COMMON_ERROR;
+                tmpAtPacket[1] = SEND_ERROR_EMPTY + 48;
+            }
+            
+            tmpAtPacket[strlen(tmpAtPacket)] = '\0';
+            for(i=0 ; i<strlen(tmpAtPacket) ; i++) sprintf(&tmpAtPacket_asc[i*2], "%02x", tmpAtPacket[i]);
+
+    // printf("%d:%s\n", sendCntMain, tmpAtPacket);
+    // printf("%d:%s\n\n", sendCntMain, tmpAtPacket_asc);
+
+            sprintf(destMsg, AT_CMD_UNI, strlen(tmpAtPacket_asc)/2, AT_TAB, tmpAtPacket_asc, AT_EOF);
+            // delay(1000);
+
+            read(fAtcmd, tmpAtPacket, MYTHINGS_MSG_SZ);
+            XK_ATcmdWriteSimple(fAtcmd, destMsg);
+            delay(100);
+            res = XK_ATcmdRead(fAtcmd, 8);
+
+            if(res) sendCntMain++;
+
+            if(res==0){
+                errCnt++;
+                // _errCnt++;
+            }
+            else errCnt = 0;
+
+            if(errCnt >= 100) system("sudo reboot");
+            else{
+                if(errCnt&&errCnt%5==0){
+                    XK_ATcmdWriteSimple(fAtcmd, AT_CMD_RST);
+                    delay(2000);
+                }
+            }
+
+            // rtn = clock_gettime(CLOCK_REALTIME, &sTimeOutNanoTimeSendPeriod);
+            // XKtimeCheckSend = XK_GetTime(sTimeOutNanoTimeSendPeriod);
+            // rtn = clock_gettime(CLOCK_REALTIME, &sTimeOutNanoTimeSendPeriod_pre);
+            XKtimeCheckSend_pre = XKtimeCheckSend;
         }
-        
-        // printf("err cnt = %d/%d\n", errCnt, _errCnt);
 
         delay(100);
     }
