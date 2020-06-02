@@ -458,7 +458,7 @@ void *XK_LoopThread(void *data){
 
     int XKtimeCheck_Cur = 0;
     int XKtimeCheck_Pre = 0;
-    int timeDiff;
+    int timeDiff = 0;
 
     int period1 = 60;
     int timeBucket = 10000 * period1;
@@ -470,11 +470,6 @@ void *XK_LoopThread(void *data){
     delay(2000);
 
     while(1){
-        clock_gettime(CLOCK_REALTIME, &sTimeOutNanoTime_Cur);
-        XKtimeCheck_Cur = XK_GetTime(sTimeOutNanoTime_Cur);
-
-        timeDiff = (timeBucket + XKtimeCheck_Cur) % timeBucket;
-
         if( (timeDiff/10) % period1 == 0)       //60 sec
         {
             gFlgWiFiConnStatus = IsInternetConnected();
@@ -496,6 +491,11 @@ void *XK_LoopThread(void *data){
             }
         }
         delay(100);
+        
+        clock_gettime(CLOCK_REALTIME, &sTimeOutNanoTime_Cur);
+        XKtimeCheck_Cur = XK_GetTime(sTimeOutNanoTime_Cur);
+        timeDiff = (timeBucket + XKtimeCheck_Cur) % timeBucket;
+
     }
 }
 
@@ -652,16 +652,10 @@ void *SendMythings(void *data)
     int fAtcmd;
     char isZone = 0;
 
-
-
-// const int LEDLIGHT_RED_Pin;
-// const int LEDLIGHT_YELLOW_Pin;
-// const int LEDLIGHT_GREEN_Pin;
-
-    wiringPiSetupGpio(); // Initialize wiringPi -- using Broadcom pin numbers
-    pinMode(LEDLIGHT_RED_PIN, OUTPUT);     // Set regular LED as output
-    pinMode(LEDLIGHT_YELLOW_PIN, OUTPUT);     // Set regular LED as output
-    pinMode(LEDLIGHT_GREEN_PIN, OUTPUT);     // Set regular LED as output
+    // wiringPiSetupGpio(); // Initialize wiringPi -- using Broadcom pin numbers
+    // pinMode(LEDLIGHT_RED_PIN, OUTPUT);     // Set regular LED as output
+    // pinMode(LEDLIGHT_YELLOW_PIN, OUTPUT);     // Set regular LED as output
+    // pinMode(LEDLIGHT_GREEN_PIN, OUTPUT);     // Set regular LED as output
 
     typedef struct
     {
