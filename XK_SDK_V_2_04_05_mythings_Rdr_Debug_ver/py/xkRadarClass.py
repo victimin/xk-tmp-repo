@@ -231,6 +231,7 @@ def offAll_exit(nf=0):
     
 def offAll(nf=0):
     for r in RadarC.dev:
+		time.sleep(1)
         if(nf==0):
             r.debug_Off()
         elif(nf==1):
@@ -242,6 +243,7 @@ def onAll_exit(nf=0):
 
 def onAll(nf=0):
     for r in RadarC.dev:
+		time.sleep(1)
         if(nf==0):
             r.debug_On()
         elif(nf==1):
