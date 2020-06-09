@@ -15,21 +15,16 @@ import socket
 
 
 def check_inet():
-     try:
-          ipadd = socket.gethostbyname('xkcorp.com')
-          return 1
-     except:
-          return 0
-#    ipaddress=socket.gethostbyname(socket.gethostname())
-#    if ipaddress=="127.0.0.1":y
-#        # inetFlag = 0
-#        
-#        print("You are not connected to the internet!")
-#        return 0
-#    else:
-#        # inetFlag = 1
-#        print("You are connected to the internet with the IP address of "+ ipaddress )
-#        return 1
+    ipaddress=socket.gethostbyname(socket.gethostname())
+    if ipaddress=="127.0.0.1":
+        # inetFlag = 0
+        return 0
+        
+        # print("You are not connected to the internet!")
+    else:
+        # inetFlag = 1
+        return 1
+        # print("You are connected to the internet with the IP address of "+ ipaddress )
 
 def check_myts_at():
     ser = serial.Serial(
@@ -45,27 +40,22 @@ def check_myts_at():
     
     RefT = time.time()
 
-    time.sleep(5)
-
-    x = ser.readline()
-    while(time.time() - RefT < 10):
-        x += ser.readline()
-        if "\r\n0\r\n" in x.decode():
-#            print("OK")
+    while(time.time() - RefT > 10):
+        x = ser.readline()
+        if(x[-3:] == "0\r\n"):
+            print("OK")
             ser.close()
             return 1
             # break
+
 
     time.sleep(1)
 
     ser.close()
     return 0
 
-inetFlag = check_inet()
 mytsFlag = check_myts_at()
-
-print(mytsFlag)
-print(inetFlag)
+inetFlag = check_inet()
 
 # Hour
 XK_LOG_SEGLEN_H = 20/60
@@ -143,6 +133,9 @@ class RadarC(Thread):
         self.logFileInit()
         timeOneMin = 0
         CheckMissData = 0
+        
+        timeForLED1 = 0
+        timeForLED2 = 0
 
         pastSyncFlag = 1
 
@@ -165,9 +158,17 @@ class RadarC(Thread):
                 if time.time() - timeOneMin > PRINT_T:
                     print('[' + self.RadarPort.port + ']' + 'ID: ' + str(RadarID) + ' LEN: ' + str(LenSig) + ' MISS: ' + str(CheckMissData))
 
-                if time.time() - timeOneMin > LED_ACK_T:
-                    timeOneMin = time.time()
+                        
+                if timeForLED2==1:
+                    timeForLED2 = 0
+                    if(inetFlag==1 or mytsFlag==1):
+                        self.sendDataByte([5242])
+                        
+                if time.time() - timeForLED1 > LED_ACK_T:
+                    timeForLED1 = time.time()
+                    timeForLED2 = 1
                     self.sendDataByte([6610])
+                    time.sleep(0.1)
                     if(inetFlag==1 or mytsFlag==1):
                         self.sendDataByte([5242])
 
