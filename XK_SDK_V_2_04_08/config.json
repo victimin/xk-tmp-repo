@@ -31,13 +31,13 @@
     "account-ID" : "none",
     "device": "XKRP3BP-NEW001",
     "mode": "polling",
-    "send-period": 5000,
+    "send-period": 2000,
     "rID-type": "s",
-    "data-type": "m",
+    "data-type": "v",
     "endpoint": {
-      "host": "internalapi.xandarkardian.com",
-      "page": "api/sensors",
-      "port": 443
+      "host": "pilot.xandarkardian.com",
+      "page": "api/v1/poc",
+      "port": 80
     },
     "server": {
       "port": 8080
