@@ -58,7 +58,7 @@ print(inetFlag)
 
 # Hour
 XK_LOG_SEGLEN_H = 20/60
-XK_LOG_DELPERIOD_H = 18
+XK_LOG_DELPERIOD_H = 24
 # XK_LOG_SEGLEN_H = 12/3600 # for Debugging
 # XK_LOG_DELPERIOD_H = 24/3600
 
