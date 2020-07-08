@@ -623,7 +623,7 @@ int a, b, c;
                 // printf("#%d.%d\n  %d\n",i,j,(int)g_Radar_Data[(GETDATA_BUFFER_NUMBER + nShearBufferIdx[i] - 1)%GETDATA_BUFFER_NUMBER].m_nALLRadarData[i][PARAM_IDX_ZONE_NUM_PEOPLE+4]);
                 res = GetGroupNum(XK_HTTPHandle->serialNum[i]);
                 if(res == -1 && XK_UARTHandle[i].cntNodata<5){
-                    LOG_E("LED", "Invalid Serial Number");
+                    // LOG_E("LED", "Invalid Serial Number");
                 }
                 else{
                     tmpNumOfPeople[res] += (int)g_Radar_Data[(GETDATA_BUFFER_NUMBER + nShearBufferIdx[i] - 1)%GETDATA_BUFFER_NUMBER].m_nALLRadarData[i][PARAM_IDX_ZONE_NUM_PEOPLE+4];
@@ -635,7 +635,7 @@ int a, b, c;
             SetLEDStatus(i, tmpNumOfPeople[i]);
         }
 
-        printf("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nHow many people?     G0=%d     G1=%d\n", tmpNumOfPeople[0], tmpNumOfPeople[1]);
+        // printf("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nHow many people?     G0=%d     G1=%d\n", tmpNumOfPeople[0], tmpNumOfPeople[1]);
 
         // if(aaa==0){
         //     LED_Status[0][COLOR_IDX_RED]=LED_ON;
