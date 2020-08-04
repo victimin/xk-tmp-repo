@@ -1,0 +1,46 @@
+{
+  "info": {
+    "name": "XK-SDK",
+    "version": "2.04.11",
+    "function": "XK-Radar-Gateway",
+    "client": "##include client name you want ex) XandarKardian",
+    "api": {
+      "name": "XKGW-API",
+      "version": "1.1"
+    },
+    "description": {
+      "detail": "XandarKardian SDK and gateway API",
+      "author": {
+        "company": "XandarKardian",
+        "url": "www.xandarkardian.com",
+        "name1": "Jerry Lee",
+        "e-mail1": "jerry@xandarkardian.com",
+        "name2": "Danny",
+        "e-mail2": "Danny@xandarkardian.com"
+      }
+    }
+  },
+  "config": {
+    "system-log": 1,
+    "data-log": 1,
+    "auto-reboot": 0,
+    "send-to-server" : 1,
+    "send-if-changed" : 0,
+    "SIC-interval" : 2000,
+    "authorization" : "none",
+    "account-ID" : "none",
+    "device": "XKRP3BP-NEW001",
+    "mode": "polling",
+    "send-period": 1000,
+    "rID-type": "s",
+    "data-type": "m",
+    "endpoint": {
+      "host": "internalapi.xandarkardian.com",
+      "page": "api/sensors",
+      "port": 443
+    },
+    "server": {
+      "port": 8080
+    }
+  }
+}
