@@ -1382,7 +1382,7 @@ int readDir(char * path)
     
 }
 
-int ParseDir(char * path, XK_USBinfo_t * usbInfo)
+int parseDir(char * path, XK_USBinfo_t * usbInfo)
 {
     int i;
     int hubCount=0;
@@ -1422,7 +1422,7 @@ int XK_USB_Scan_All(void){
             // printf ("[%d]%s\n", i, &usbName[i]);
             portN = XK_USB_Get_Portnum(&usbName[i]);
             infoUSB[portN].portnum = portN;
-            infoUSB[portN].hubN = ParseDir(&usbName[i], &infoUSB[portN]);
+            infoUSB[portN].hubN = parseDir(&usbName[i], &infoUSB[portN]);
             if(portN != 200){
                 infoUSB[portN].busnum = XK_USB_Get_Busnum(infoUSB[portN].hubNum, infoUSB[portN].hubN);
                 infoUSB[portN].devnum = XK_USB_Get_Devnum(infoUSB[portN].hubNum, infoUSB[portN].hubN);

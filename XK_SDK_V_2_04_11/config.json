@@ -3,7 +3,7 @@
     "name": "XK-SDK",
     "version": "2.04.11",
     "function": "XK-Radar-Gateway",
-    "client": "##include client name you want ex) XandarKardian",
+    "client": "Prosegur",
     "api": {
       "name": "XKGW-API",
       "version": "1.1"
@@ -28,10 +28,10 @@
     "send-if-changed" : 0,
     "SIC-interval" : 2000,
     "authorization" : "none",
-    "account-ID" : "none",
+    "account-ID" : "5f2ce8e46b12e10cdc472831",
     "device": "XKRP3BP-NEW001",
     "mode": "polling",
-    "send-period": 1000,
+    "send-period": 5000,
     "rID-type": "s",
     "data-type": "m",
     "endpoint": {

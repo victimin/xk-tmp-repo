@@ -71,9 +71,7 @@ void *otherDeviceHandler(void *data)
     delay(2500);
     while(1)
     {   
-        printf("b-1\n");
         if(CheckRadarFuunc()<0) {
-        printf("b-2\n");
 #if OTHERD_DEBUG_ENABLE
             printf("Waiting for Connection with Check the other Divce\n");
 #endif
@@ -81,26 +79,20 @@ void *otherDeviceHandler(void *data)
             continue;
         }
 
-        printf("b-3\n");
         deviceCheck();
-        printf("b-4\n");
 
         // delayPeriod(&WTimeT);
 
         for(int pi=0;otherDevIndex[pi]>=0;pi++){
             if(otherDevFunc[pi]==0 && delayPeriodCheck(&appTimeArr[pi],1000/fps_forCheck[pi])){
-        printf("b-5\n");
                 checkFunc(pi);
-        printf("b-6\n");
         
             } else if(otherDevFunc[pi] == RADAR_APP_WMFALL && delayPeriodCheck(&appTimeArr[pi],1000/fps_forCheck[pi])){
-        printf("b-7\n");
 #if OTHERD_DEBUG_ENABLE
                 printf("It's Fall UI Section\n");
 #endif
                 char UIdata[sizeof(sendPCFallmsg_t)];
                 makeUIFallResult(UIdata, 0); // TODO: Now, only first set of radar is connected with PC.
-        printf("b-8\n");
                 write(cpc.fd,UIdata,sizeof(sendPCFallmsg_t));
                 // for(int li=0;li<sizeof(sendPCFallmsg_t);li++){
                 //     if(li%10 == 0) printf("\n");
@@ -112,15 +104,12 @@ void *otherDeviceHandler(void *data)
                 unsigned char recvData[4096];
 
                 if((len = read(cpc.fd,recvData,4096))>0){
-        printf("b-9\n");
                     delay(10);
                     int temp =len;
                     while((len += read(cpc.fd,&recvData[len],512))!=temp) temp = len;
-        printf("b-10\n");
 
                     float dataf[1024] = {0};
                     memcpy(dataf,recvData,4096);
-        printf("b-11\n");
 
 #if OTHERD_DEBUG_ENABLE && 0
                     printf("%d:::\t",len);
@@ -134,38 +123,31 @@ void *otherDeviceHandler(void *data)
 #endif
                     if(dataf[0] == SYNC_FLOAT_LEGACY){
                         cmd_fall_system_legacy(&dataf[1],0);
-        printf("b-12\n");
                     }
                     if(dataf[0] == SYNC_FLOAT){
                         cmd_fall_system(&dataf[1],0);
-        printf("b-13\n");
                     }
                 }
             }else if(otherDevFunc[pi] == RADAR_APP_INOUT && delayPeriodCheck(&appTimeArr[pi],1000/fps_forCheck[pi])){
-        printf("b-14\n");
 #if OTHERD_DEBUG_ENABLE
                 printf("It's INOUT UI Section\n");
 #endif
                 char UIdata[2048];
                 int Ln = makeUIInoutResult(UIdata, 0); // TODO: Now, only first set of radar is connected with PC.
-        printf("b-15\n");
                 write(cpc.fd,UIdata,Ln);
 
                 int len;
                 unsigned char recvData[4096];
 
                 if((len = read(cpc.fd,recvData,4096))>0){
-        printf("b-16\n");
                     delay(10);
                     int temp =len;
                     while((len += read(cpc.fd,&recvData[len],512))!=temp) temp = len;
-        printf("b-17\n");
 
                     float dataf[1024] = {0};
                     memcpy(dataf,recvData,4096);
                     
                     cmd_Inout_system_legacy(&dataf[0],0,len/4);
-        printf("b-18\n");
                 }
             }
             delay(100);

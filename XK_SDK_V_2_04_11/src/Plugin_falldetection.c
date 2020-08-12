@@ -47,7 +47,6 @@ static int IswmFall[MAX_NUM_USB_DEVICE] = {0};
 
 static struct timeval ZTime;
 
-float test[200];
 void *SendToRadarThread(void *data)
 {
     int nStatus = 0;
@@ -90,16 +89,13 @@ void *SendToRadarThread(void *data)
     {   
         // if(CheckwaitGETTime>3*MYTIME_PER_SEC){
         //     mytimeAdd(&RTimeT,1);
-        printf("a-1\n");
             if(CheckRadarFunc()<0) {
 #if FALL_DEBUG_ENABLE
                 printf("Waiting for Connection with WMFall\n");
 #endif
                 delay(3000);
                 // waitGETTime = clock();
-        printf("a-2\n");
                 gettimeofday(&RTime, NULL);
-        printf("a-3\n");
                 continue;
             }
         // }
@@ -110,13 +106,10 @@ void *SendToRadarThread(void *data)
         int Bindx = (*Res[0].r[0].BufferIdx-1 + GETDATA_BUFFER_NUMBER)%GETDATA_BUFFER_NUMBER;
         printf("%10.2f\n",Res[0].r[0].data[Bindx][F_CURSOR]);
 #endif
-        printf("a-4\n");
         (TempTime>0)? delay(TempTime/1000):1;
         while(mytime(&WTime,&RTime) < (MYTIME_PER_SEC)/fps_wmfall);
-        printf("a-5\n");
 
         mytimeAdd(&RTime,fps_wmfall);
-        printf("a-6\n");
 #if FALL_DEBUG_ENABLE
         printf("\nThread Send2Radar at time: %ld ms // %ld ms\n",mytime(&WTimeT,&ZTime)/1000,mytimecheck(&RTime));
 #endif
@@ -126,15 +119,11 @@ void *SendToRadarThread(void *data)
 #if FALL_LOG_ENABLE
         SaveData(0);
 #endif
-        printf("a-7\n");
         forLEDctrl(0);
-        printf("a-8\n");
 
         pthread_mutex_lock(&SendRadar_lock);
         for (int nsi = 0; nsi < D_init.NumSystem; nsi++){
-        printf("a-9\n");
             if(!getNoData_fall(nsi)){
-        printf("a-10\n");
                 int TempI = 0;
                 Res[nsi].Send2Rbuf[TempI++] = 404.3333;
 
@@ -144,7 +133,6 @@ void *SendToRadarThread(void *data)
                         Res[nsi].Send2Rbuf[TempI++] = Res[nsi].r[rri].data[Bindx][SendtoRadarP[spi]];
                     }
                 }
-        printf("a-11\n");
                 Res[nsi].Send2Rbuf[TempI++] = 4.28428;
                 Res[nsi].Send2Rbuf[TempI++] = 255.255;
 
@@ -153,11 +141,9 @@ void *SendToRadarThread(void *data)
                 for(int rri=0;rri<NUM_RADAR_FALL;rri++){
                     write(*(Res[nsi].r[rri].fd),(char*)(Res[nsi].Send2Rbuf),Res[nsi].msglen);
                 }
-        printf("a-12\n");
             }
         }
         pthread_mutex_unlock(&SendRadar_lock);
-        printf("a-13\n");
     } // while(1)
 }
 
@@ -200,6 +186,9 @@ int wmFallDeinit(){
 
     return 0;
 }
+
+
+
 
 int CheckRadarFunc(){
     int Cnt_N_wmfall = 0;

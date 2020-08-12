@@ -28,7 +28,7 @@ extern "C"
 /*********************************************** 
  *  Algorithm Plugin & Program ON/OFF section
 ************************************************/
-#define FALL_ENABLE                     1
+#define FALL_ENABLE                     0
 #define FALL_DEBUG_ENABLE               0
 
 #define INOUT_ENABLE                    0
