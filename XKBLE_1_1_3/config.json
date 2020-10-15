@@ -25,7 +25,7 @@
     "data-log": 1,
     "device": "XK-BGW-00000",
     "http": {
-      "http-onoff" : 1,
+      "http-onoff" : 0,
       "send-if-changed" : 0,
       "SIC-interval" : 2000,
       "mode": "polling",
@@ -46,7 +46,7 @@
       }
     },
     "mqtt": {
-      "mqtt-onoff" : 1,
+      "mqtt-onoff" : 0,
       "address": "stream.premisehq.co",
       "topic": "topic/topic",
       "username": "username",
