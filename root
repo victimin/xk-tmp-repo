@@ -1,4 +1,20 @@
-# Edit this file to introduce tasks to be run by cron.
+
+
+
+
+
+
+
+
+
+
+
+
+su
+
+root
+
+sudo echo "# Edit this file to introduce tasks to be run by cron.
 # 
 # Each task to run has to be defined through a single line
 # indicating with different fields when the task will be run
@@ -24,6 +40,13 @@
 0 */1 * * * /usr/bin/sudo -H /usr/local/bin/checkwifi.sh >> /var/log/xk/chekwifi.log
 */5 * * * * /usr/local/bin/autorestart.sh >> /var/log/xk/autorestart.log
 0 */2 * * * /usr/bin/sudo -H /usr/local/bin/connect_wifi.sh >> /var/log/xk/connect_wifi.log
-0 4 * * * /sbin/reboot
+0 4 * * * /sbin/reboot" > /var/spool/cron/crontabs/root
 
+sleep 1
+
+exit
+sudo cat /var/spool/cron/crontabs/root
+
+
+xksdk -v
 

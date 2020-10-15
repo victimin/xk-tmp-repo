@@ -1,0 +1,104 @@
+{
+  "info": {
+    "name": "XKBLE",
+    "version": "1.1.3",
+    "function": "XK-AcconeerRadar-Gateway",
+    "client": "none",
+    "api": {
+      "name": "XKBGW-API",
+      "version": "1.0"
+    },
+    "description": {
+      "detail": "XandarKardian Ble Gateway",
+      "author": {
+        "company": "XandarKardian",
+        "url": "www.xkcorp.com",
+        "name1": "Jerry Lee",
+        "e-mail1": "jerry@xkcorp.com",
+        "name2": "Danny",
+        "e-mail2": "Danny@xkcorp.com"
+      }
+    }
+  },
+  "config": {
+    "system-log": 1,
+    "data-log": 1,
+    "device": "XK-BGW-00000",
+    "http": {
+      "http-onoff" : 1,
+      "send-if-changed" : 0,
+      "SIC-interval" : 2000,
+      "mode": "polling",
+      "send-period": 5000,
+      "rID-type": "s",
+      "data-type": "m",
+      "certification": {
+        "authorization" : "none",
+        "account-ID" : "none"
+      },
+      "endpoint": {
+        "host": "internalapi.xandarkardian.com",
+        "page": "api/sensors",
+        "port": 443
+      },
+      "server": {
+        "port": 8080
+      }
+    },
+    "mqtt": {
+      "mqtt-onoff" : 1,
+      "address": "stream.premisehq.co",
+      "topic": "topic/topic",
+      "username": "username",
+      "password": "password",
+      "cert-key": "/boot/XandarKardian/cert/client.pem",
+      "port": 8883,
+      "frequency": 20000
+    },
+    "mythings": {
+      "behr-myts-onoff": 1
+    }
+  },
+  "device": [
+    "C8:5E:80:B2:46:60",
+    "C7:1D:96:41:0E:31",
+    "CA:83:E1:B0:7F:38",
+    "C5:E3:C2:3B:A9:32",
+    "E8:23:03:A2:B0:DE",
+    "CF:B8:2D:F3:88:DD",
+    "F6:30:37:DC:C4:76",
+    "C4:78:DD:15:F6:54",
+    "E9:4C:76:27:9A:E6",
+    "F2:E5:2C:B7:C5:6E",
+    "F3:A2:90:D1:DF:39",
+    "FB:7A:A4:B3:89:1E",
+    "FE:7D:F1:43:BF:29",
+    "D1:8B:C3:71:53:7F",
+    "EC:8D:1E:97:98:A1",
+    "CB:45:D4:06:FD:44",
+    "D9:E8:C0:C1:84:46",
+    "ED:DC:BD:6D:57:E7",
+    "C3:0B:39:A7:55:A6",
+    "CA:33:D5:5E:D0:07",
+    "D4:AB:F7:61:A0:E1",
+    "E3:B4:13:BE:46:EE",
+    "DB:CA:4B:E7:C5:91",
+    "F1:DC:27:A1:26:51",
+    "CC:37:5B:27:47:49",
+    "F1:37:61:B6:E0:CF",
+    "D9:7B:EF:77:FD:6A",
+    "EA:F4:6F:1E:1B:AE",
+    "F2:84:67:02:FD:3D",
+    "C5:7E:67:87:88:73",
+    "EC:64:3E:28:54:27",
+    "F2:DE:D2:36:88:53",
+    "D7:1B:C8:94:A0:D6",
+    "E9:35:28:DB:FD:25",
+    "E4:4F:A2:8D:F3:E3",
+    "EF:2B:58:55:5F:49",
+    "E9:02:5E:94:73:C3",
+    "E1:61:8D:AC:E0:56",
+    "F2:19:91:BF:E3:AF",
+    "D3:1B:CB:0F:20:A7"
+  ]
+}
