@@ -1162,7 +1162,7 @@ void *MqttSendThread(void *data)
                     gUtcTime.tm_sec ,
                     val.tv_usec
             );
-            sprintf(mqttPacket, "{\"SensorData\": \"%s\",\"Time\": \"%s\",\"Type\": \"xkgw_ble\"}", tmpAtPacket, timeStamp);
+            sprintf(mqttPacket, "{\"SensorData\": \"%s\",\"Time\": \"%s\",\"Type\": \"xkgw\"}", tmpAtPacket, timeStamp);
 
             // printf("%s\n", timeStamp);
             printf("%s\n", mqttPacket);
