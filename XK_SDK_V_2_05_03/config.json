@@ -49,9 +49,9 @@
     "mqtt": {
       "mqtt-onoff" : 1,
       "address": "stream.premisehq.co",
-      "topic": "xkmultiaction/willowbrook/main_level/xkgw",
-      "username": "quadreal:quadreal",
-      "password": "g}dRh>8md",
+      "topic": "wxkmultiaction/101/area1/xkgw",
+      "username": "walmart:walmart",
+      "password": "c0d3fhvggaedjc",
       "cert-key": "/boot/XandarKardian/cert/client.pem",
       "port": 8883,
       "frequency": 20000
