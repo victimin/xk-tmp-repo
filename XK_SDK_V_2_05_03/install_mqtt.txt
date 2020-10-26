@@ -4,6 +4,8 @@ cd paho.mqtt.c
 make
 sudo make install
 
+cd ..
+sudo rm -r paho.mqtt.c
 
 
 ### if want to test
