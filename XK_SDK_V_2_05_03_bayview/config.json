@@ -26,20 +26,20 @@
     "auto-reboot": 0,
     "device": "XK-GW-00000",
     "http": {
-      "http-onoff" : 0,
+      "http-onoff" : 1,
       "send-if-changed" : 0,
       "SIC-interval" : 2000,
       "mode": "polling",
       "send-period": 5000,
-      "rID-type": "s",
-      "data-type": "m",
+      "rID-type": "r",
+      "data-type": "v",
       "certification": {
         "authorization" : "none",
         "account-ID" : "none"
       },
       "endpoint": {
-        "host": "internalapi.xandarkardian.com",
-        "page": "api/sensors",
+        "host": "bayviewvillageshops.xandarkardian.com",
+        "page": "device/gateway/data",
         "port": 443
       },
       "server": {
