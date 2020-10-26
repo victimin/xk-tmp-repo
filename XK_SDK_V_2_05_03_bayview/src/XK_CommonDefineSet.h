@@ -21,7 +21,7 @@ extern "C"
 /*********************************************** 
  *  Version Info section
 ************************************************/
-#define SDK_VERSION                     "2.05.04"
+#define SDK_VERSION                     "2.05.03_bayview"
 #define API_VERSION                     "1.1"
 
 
