@@ -1092,7 +1092,8 @@ void *MqttSendThread(void *data)
                                 tmpAtPacket[strlen(tmpAtPacket)] = SEND_CMD_PREVITAL_VERSION;
                                 
                                 sprintf(&tmpAtPacket[strlen(tmpAtPacket)], "%d", XK_UARTHandle[i].appNum);
-                                sprintf(&tmpAtPacket[strlen(tmpAtPacket)], "%s", XK_HTTPHandle->serialNum[i]);
+                                sprintf(&tmpAtPacket[strlen(tmpAtPacket)], "1354000%d", XK_HTTPHandle->radarID[i]);
+                                // sprintf(&tmpAtPacket[strlen(tmpAtPacket)], "%s", XK_HTTPHandle->serialNum[i]);
                                 
                                 tmpAtPacket[strlen(tmpAtPacket)] = (((unsigned int)rcvdData[i][PARAM_IDX_PREVITAL_VER+4])/100000)%10+'0';
                                 tmpAtPacket[strlen(tmpAtPacket)] = (((unsigned int)rcvdData[i][PARAM_IDX_PREVITAL_VER+4])/10000)%10+'0';
@@ -1106,8 +1107,9 @@ void *MqttSendThread(void *data)
                                 tmpAtPacket[strlen(tmpAtPacket)] = SEND_CMD_PREVITAL_NORMAL;
                                 
                                 sprintf(&tmpAtPacket[strlen(tmpAtPacket)], "%d", XK_UARTHandle[i].appNum);
-                                sprintf(&tmpAtPacket[strlen(tmpAtPacket)], "%s", XK_HTTPHandle->serialNum[i]);
-
+                                sprintf(&tmpAtPacket[strlen(tmpAtPacket)], "1354000%d", XK_HTTPHandle->radarID[i]);
+                                // sprintf(&tmpAtPacket[strlen(tmpAtPacket)], "%s", XK_HTTPHandle->serialNum[i]);
+                                
                                 tmpAtPacket[strlen(tmpAtPacket)] = (((unsigned int)rcvdData[i][PARAM_IDX_PRES_PRES_STS+4])%10)+'0';
 
                                 tmpAtPacket[strlen(tmpAtPacket)] = (((unsigned int)rcvdData[i][PARAM_IDX_PREVITAL_BR+4])/10)%10+'0';

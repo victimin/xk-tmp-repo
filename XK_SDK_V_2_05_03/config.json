@@ -3,7 +3,7 @@
     "name": "XK-SDK",
     "version": "2.05.03",
     "function": "XK-Radar-Gateway",
-    "client": "Cogito",
+    "client": "none",
     "api": {
       "name": "XKGW-API",
       "version": "1.1"
@@ -49,9 +49,9 @@
     "mqtt": {
       "mqtt-onoff" : 1,
       "address": "stream.premisehq.co",
-      "topic": "cxmultiaction/cogito/main_level/xkgw",
-      "username": "cogito:cogito",
-      "password": "co86hj!hdj!!",
+      "topic": "topic/topic",
+      "username": "username",
+      "password": "password",
       "cert-key": "/boot/XandarKardian/cert/client.pem",
       "port": 8883,
       "frequency": 20000
