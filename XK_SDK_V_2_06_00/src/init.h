@@ -1,0 +1,84 @@
+#ifndef __INIT_H__
+#define __INIT_H__
+
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
+#include "XK_CommonDefineSet.h"
+
+typedef enum
+{
+  XK_LV2_OBJ_INFO = 0,
+  XK_LV2_OBJ_CONFIG,
+  XK_LV2_OBJ_SIZE
+} XK_LV2_OBJECT;
+
+typedef enum
+{
+  XK_LV3_OBJ_HTTP = 0,
+  XK_LV3_OBJ_MQTT,
+  XK_LV3_OBJ_SIZE
+} XK_LV3_OBJECT;
+
+typedef enum
+{
+  XK_LV2_OBJ_INFO_NAME = 0,
+  XK_LV2_OBJ_INFO_VERSION,
+  XK_LV2_OBJ_INFO_FUNTION,
+  XK_LV2_OBJ_INFO_CLIENT,
+  XK_LV2_OBJ_INFO_API,
+  XK_LV2_OBJ_INFO_DESCRP,
+  XK_LV2_OBJ_INFO_SIZE
+} XK_LV2_OBJ_INFO_MEMBER;
+
+typedef enum
+{
+  XK_LV2_OBJ_CONF_AUTHOR = 0,
+  XK_LV2_OBJ_CONF_ACCNT_ID,
+  XK_LV2_OBJ_CONF_DEVICE,
+  XK_LV2_OBJ_CONF_MODE,
+  XK_LV2_OBJ_CONF_SEND_PERI,
+  XK_LV2_OBJ_CONF_SYS_LOG,
+  XK_LV2_OBJ_CONF_DATA_LOG,
+  XK_LV2_OBJ_CONF_AUTO_REBOOT,
+  XK_LV2_OBJ_CONF_ID_TYPE,
+  XK_LV2_OBJ_CONF_DATA_TYPE,
+  XK_LV2_OBJ_CONF_ENDPOINT,
+  XK_LV2_OBJ_CONF_SERVER,
+  XK_LV2_OBJ_CONF_SIZE
+} XK_LV2_OBJ_CONF;
+
+typedef enum
+{
+  XK_LV3_OBJ_API_NAME = 0,
+  XK_LV3_OBJ_API_VERSION,
+  XK_LV3_OBJ_API_SIZE,
+} XK_LV3_OBJ_API;
+
+typedef enum
+{
+  XK_LV3_OBJ_ENDP_HOST = 0,
+  XK_LV3_OBJ_ENDP_PAGE,
+  XK_LV3_OBJ_ENDP_PORT,
+  XK_LV3_OBJ_ENDP_SIZE,
+} XK_LV3_OBJ_ENDP;
+
+typedef enum
+{
+  XK_LV3_OBJ_SEVER_HOST = 0,
+  XK_LV3_OBJ_SEVER_SIZE,
+} XK_LV3_OBJ_SERVER;
+
+
+void InitInfo(XK_HTTPHandle_t * XK_HTTPHandle, XK_InitInfo_t *initInfo);
+void InitParamSize(void);
+
+#ifdef __cplusplus
+}
+#endif
+
+
+#endif
+
