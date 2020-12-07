@@ -1,7 +1,7 @@
 {
   "info": {
     "name": "XK-SDK",
-    "version": "2.04.09.mythings.2.1",
+    "version": "2.04.09.mythings.2.2",
     "function": "XK-Radar-Gateway for Mythings",
     "client": "##include client name you want ex) XandarKardian",
     "api": {
