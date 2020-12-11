@@ -29,7 +29,7 @@
     "SIC-interval" : 2000,
     "authorization" : "none",
     "account-ID" : "none",
-    "device": "XK-GW-MYTS-00549",
+    "device": "XK-GW-MYTS-00000",
     "mode": "polling",
     "send-period": 5000,
     "rID-type": "s",
