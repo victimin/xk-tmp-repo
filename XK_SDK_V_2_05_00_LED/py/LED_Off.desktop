@@ -1,7 +1,0 @@
-[Desktop Entry]
-Type=Application
-Encoding=UTF-8
-Name=LED Off
-Exec=sh /var/log/xk/py/LED_Off.sh
-Icon=/var/log/xk/py/Off.jpg
-Terminal=false

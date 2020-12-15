@@ -1,7 +1,0 @@
-[Desktop Entry]
-Type=Application
-Encoding=UTF-8
-Name=LED On
-Exec=sh /var/log/xk/py/LED_On.sh
-Icon=/var/log/xk/py/On.jpg
-Terminal=false
