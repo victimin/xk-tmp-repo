@@ -1,0 +1,11 @@
+git clone https://github.com/eclipse/paho.mqtt.c.git
+cd paho.mqtt.c
+
+make
+sudo make install
+
+
+
+### if want to test
+# sudo apt-get install mosquitto mosquitto-clients -y
+
