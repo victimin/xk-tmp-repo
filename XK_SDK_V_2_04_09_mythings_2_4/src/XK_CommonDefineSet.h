@@ -21,7 +21,7 @@ extern "C"
 /*********************************************** 
  *  Version Info section
 ************************************************/
-#define SDK_VERSION                     "2.04.09.mythings.2.3"
+#define SDK_VERSION                     "2.04.09.mythings.2.4"
 #define API_VERSION                     "1.1"
 
 

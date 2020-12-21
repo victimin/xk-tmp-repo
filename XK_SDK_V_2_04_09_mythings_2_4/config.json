@@ -1,7 +1,7 @@
 {
   "info": {
     "name": "XK-SDK",
-    "version": "2.04.09.mythings.2.3",
+    "version": "2.04.09.mythings.2.4",
     "function": "XK-GW-MYTS",
     "client": "##include client name you want ex) XandarKardian",
     "api": {
