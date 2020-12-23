@@ -38,9 +38,9 @@
                 "account-ID": "none"
             },
             "endpoint": {
-                "host": "internalapi.xandarkardian.com",
-                "page": "api/sensors",
-                "port": 443
+                "host": "pilot.xandarkardian.com",
+                "page": "api/v1/poc",
+                "port": 80
             },
             "server": {
                 "port": 8080
