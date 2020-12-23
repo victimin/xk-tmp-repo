@@ -13,7 +13,7 @@ int DataTrans_I2Z(XK_HTTPHandle_t * radarInfo, XK_UARTHandle_t * uartInfo, int m
 int CombinationProcess_Zone_Inout(XK_HTTPHandle_t * radarInfo, XK_UARTHandle_t * uartInfo){
     int i, j;
 
-#if (1)
+#if (0)
 int in1=1;
 int zone1=0;
 int zone2=2;
