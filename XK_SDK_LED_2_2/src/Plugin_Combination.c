@@ -124,6 +124,7 @@ int DataTrans_Z2Z(XK_HTTPHandle_t * radarInfo, XK_UARTHandle_t * uartInfo, int m
 
 #if UART_DATA_LOG_ONOFF == 1
                         FILE *fp;
+                        int file_access;
                         char tmpStr[200];
                         file_access = access("/home/xk/xk_log.csv", R_OK | W_OK);
                         if(file_access == -1)
@@ -174,6 +175,7 @@ int DataTrans_I2Z(XK_HTTPHandle_t * radarInfo, XK_UARTHandle_t * uartInfo, int m
 
 #if UART_DATA_LOG_ONOFF == 1
                         FILE *fp;
+                        int file_access;
                         char tmpStr[200];
                         file_access = access("/home/xk/xk_log.csv", R_OK | W_OK);
                         if(file_access == -1)
