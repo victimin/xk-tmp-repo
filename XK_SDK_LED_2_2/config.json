@@ -1,0 +1,63 @@
+{
+	"info": {
+		"name": "XK-SDK",
+		"version": "LED.2.2",
+		"function": "XK-Radar-Gateway",
+		"client": "none",
+		"api": {
+			"name": "XKGW-API",
+			"version": "1.1"
+		},
+		"description": {
+			"detail": "XandarKardian SDK and gateway API",
+			"author": {
+				"company": "XandarKardian",
+				"url": "www.xandarkardian.com",
+				"name1": "Jerry Lee",
+				"e-mail1": "jerry@xandarkardian.com",
+				"name2": "Danny",
+				"e-mail2": "Danny@xandarkardian.com"
+			}
+		}
+	},
+	"config": {
+		"system-log": 1,
+		"data-log": 1,
+		"auto-reboot": 0,
+		"device": "XKRP3BP-LCGW-00000",
+		"http": {
+			"http-onoff": 0,
+			"send-if-changed": 0,
+			"SIC-interval": 2000,
+			"mode": "polling",
+			"send-period": 2000,
+			"rID-type": "s",
+			"data-type": "m",
+			"certification": {
+				"authorization": "none",
+				"account-ID": "none"
+			},
+			"endpoint": {
+				"host": "internalapi.xandarkardian.com",
+				"page": "api/sensors",
+				"port": 443
+			},
+			"server": {
+				"port": 8080
+			}
+		},
+		"mqtt": {
+			"mqtt-onoff": 1,
+			"address": "stream.premisehq.co",
+			"topic": "mapleleafcr/32_Kennedy_Rd/MainLevel/xkgw",
+			"username": "mapleleaf:mapleleaf",
+			"password": "mpg}dRphys8mdsa",
+			"cert-key": "/boot/XandarKardian/cert/client.pem",
+			"port": 8883,
+			"frequency": 20000
+		},
+		"mythings": {
+			"behr-myts-onoff": 0
+		}
+	}
+}

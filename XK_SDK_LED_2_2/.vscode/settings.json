@@ -1,0 +1,8 @@
+{
+    "files.associations": {
+        "cstddef": "cpp",
+        "limits": "cpp",
+        "xutility": "cpp",
+        "xmemory0": "c"
+    }
+}
