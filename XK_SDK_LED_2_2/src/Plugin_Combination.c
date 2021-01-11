@@ -6,7 +6,7 @@ typedef union {
 	float f[10];
 } metaMsg_t;
 
-#define UART_DATA_LOG_ONOFF             1
+#define UART_DATA_LOG_ONOFF             0
 
 int DataTrans_Z2Z(XK_HTTPHandle_t * radarInfo, XK_UARTHandle_t * uartInfo, int masterPort);
 int DataTrans_I2Z(XK_HTTPHandle_t * radarInfo, XK_UARTHandle_t * uartInfo, int masterPort);
@@ -15,9 +15,9 @@ int CombinationProcess_Zone_Inout(XK_HTTPHandle_t * radarInfo, XK_UARTHandle_t *
     int i, j;
 
 #if (1)
-int in1=0;
-int zone1=3;
-int zone2=7;
+int in1=3;
+int zone1=0;
+int zone2=1;
 
     printf("# how many zone %f    how inout %f    //    how zone %f    how inout %f  cnt0 %f  cnt1 %f cnt2 %f\n", 
         radarInfo->rcvdRadarData[zone1][47+4],
@@ -126,14 +126,15 @@ int DataTrans_Z2Z(XK_HTTPHandle_t * radarInfo, XK_UARTHandle_t * uartInfo, int m
                         FILE *fp;
                         int file_access;
                         char tmpStr[200];
-                        file_access = access("/home/xk/xk_log.csv", R_OK | W_OK);
+                        file_access = access("/home/xk/xk_log_zz.csv", R_OK | W_OK);
                         if(file_access == -1)
-                            fp = fopen("/home/xk/xk_log.csv", "w");
+                            fp = fopen("/home/xk/xk_log_zz.csv", "w");
                         else if(file_access == 0)
-                            fp = fopen("/home/xk/xk_log.csv", "a+");
+                            fp = fopen("/home/xk/xk_log_zz.csv", "a+");
 
                         sprintf(tmpStr, "zone_zone,%f,%f,%f,%f\n", meta.f[0], meta.f[1], meta.f[2], meta.f[3]);
                         fwrite(tmpStr, 1, strlen(tmpStr), fp);
+                        fclose(fp);
 #endif 
                         // printf("###### master(%s) %d,     slave(%s) %d \n", radarInfo->serialNum[masterPort], masterPort, radarInfo->serialNum[i], i);
                         // printf("@@@@@ %f \t", meta.f[0]);
@@ -177,14 +178,15 @@ int DataTrans_I2Z(XK_HTTPHandle_t * radarInfo, XK_UARTHandle_t * uartInfo, int m
                         FILE *fp;
                         int file_access;
                         char tmpStr[200];
-                        file_access = access("/home/xk/xk_log.csv", R_OK | W_OK);
+                        file_access = access("/home/xk/xk_log_iz.csv", R_OK | W_OK);
                         if(file_access == -1)
-                            fp = fopen("/home/xk/xk_log.csv", "w");
+                            fp = fopen("/home/xk/xk_log_iz.csv", "w");
                         else if(file_access == 0)
-                            fp = fopen("/home/xk/xk_log.csv", "a+");
+                            fp = fopen("/home/xk/xk_log_iz.csv", "a+");
 
                         sprintf(tmpStr, "in_zone,%f,%f,%f,%f\n", meta.f[0], meta.f[1], meta.f[2], meta.f[3]);
                         fwrite(tmpStr, 1, strlen(tmpStr), fp);
+                        fclose(fp);
 #endif 
                         // printf("###### master(%s) %d,     slave(%s) %d \n", radarInfo->serialNum[masterPort], masterPort, radarInfo->serialNum[i], i);
                         // printf("@@@@@ %f \t", meta.f[0]);
