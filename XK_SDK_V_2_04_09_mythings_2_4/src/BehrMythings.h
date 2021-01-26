@@ -9,7 +9,7 @@ extern "C"
 // #include "XK_CommonDefineSet.h"
 
 #define MYTHINGS_MSG_SZ                     200
-#define MYTHINGS_MSG_SEND_LIMIT_SZ          110
+#define MYTHINGS_MSG_SEND_LIMIT_SZ          130
 
 #define MYTHINGS_SEND_PERIOD                20  //sec
 

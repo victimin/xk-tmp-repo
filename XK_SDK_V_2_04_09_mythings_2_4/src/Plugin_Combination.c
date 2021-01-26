@@ -116,7 +116,7 @@ int DataTrans_Z2Z(XK_HTTPHandle_t * radarInfo, XK_UARTHandle_t * uartInfo, int m
                 // printf("@@@@@ %f \t", meta.f[1]);
                 // printf("@@@@@ %f \n", meta.f[2]);
                 write(*uartInfo[i].fd, &meta.c[0], idxMeta*4);
-                delay(50);
+                delay(300);
             }
         }
     }
@@ -144,7 +144,7 @@ int DataTrans_I2Z(XK_HTTPHandle_t * radarInfo, XK_UARTHandle_t * uartInfo, int m
                 // printf("@@@@@ %f \t", meta.f[2]);
                 // printf("@@@@@ %f \n", meta.f[3]);
                 write(*uartInfo[i].fd, &meta.c[0], idxMeta*4);
-                delay(50);
+                delay(300);
             }
         }
     }
