@@ -1046,7 +1046,7 @@ void *SendMythings(void *data)
             tmpAtPacket[strlen(tmpAtPacket)] = '\0';
             for(i=0 ; i<strlen(tmpAtPacket) ; i++) sprintf(&tmpAtPacket_asc[i*2], "%02x", tmpAtPacket[i]);
 
-    // printf("%d:%s\n", sendCntMain, tmpAtPacket);
+    printf("%d:%s\n", sendCntMain, tmpAtPacket);
     // printf("%d:%s\n\n", sendCntMain, tmpAtPacket_asc);
 
             sprintf(destMsg, AT_CMD_UNI, strlen(tmpAtPacket_asc)/2, AT_TAB, tmpAtPacket_asc, AT_EOF);
