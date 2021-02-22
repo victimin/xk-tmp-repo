@@ -1,0 +1,72 @@
+{
+	"info": {
+		"name": "XKBLE",
+		"version": "1.2.4",
+		"function": "XK-BGW",
+		"client": "none",
+		"api": {
+			"name": "XKBGW-API",
+			"version": "1.0"
+		},
+		"description": {
+			"detail": "XandarKardian Ble Gateway",
+			"author": {
+				"company": "XandarKardian",
+				"url": "www.xkcorp.com",
+				"name1": "Jerry Lee",
+				"e-mail1": "jerry@xkcorp.com",
+				"name2": "Danny",
+				"e-mail2": "Danny@xkcorp.com"
+			}
+		}
+	},
+	"config": {
+		"system-log": 1,
+		"data-log": 1,
+		"device": "GW 00000",
+		"http": {
+			"http-onoff": 0,
+			"send-if-changed": 0,
+			"SIC-interval": 2000,
+			"mode": "polling",
+			"send-period": 5000,
+			"rID-type": "s",
+			"data-type": "m",
+			"certification": {
+				"authorization": "none",
+				"account-ID": "none"
+			},
+			"endpoint": {
+				"host": "internalapi.xandarkardian.com",
+				"page": "api/sensors",
+				"port": 443
+			},
+			"server": {
+				"port": 8080
+			}
+		},
+		"mqtt": {
+			"mqtt-onoff": 0,
+			"address": "stream.premisehq.co",
+			"topic": "xkgw_ble/test2",
+			"username": "quadreal:quadreal",
+			"password": "g}dRh>8md",
+			"cert-key": "/boot/XandarKardian/cert/client.pem",
+			"port": 8883,
+			"frequency": 20000
+		},
+		"mythings": {
+			"behr-myts-onoff": 1
+		}
+	},
+	"device": [
+		{
+			"mac": "FF:FF:FF:FF:FF:FF",
+			"alias": ""
+		},
+		{
+			"mac": "EE:EE:EE:EE:EE:EE",
+			"alias": ""
+		}
+	]
+}
